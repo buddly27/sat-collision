@@ -16,7 +16,7 @@ class Canvas extends React.Component {
         };
 
         // Record origin pressed when moving canvas;
-        this.isDrag = false;
+        this.pressed = null;
     }
 
     componentDidMount() {
@@ -32,6 +32,17 @@ class Canvas extends React.Component {
         this.draw();
     }
 
+    draw = () => {
+        const {gridSize, originX, originY} = this.state;
+        drawAxis(this.canvas.current, gridSize, originX, originY);
+
+        const vertices = [
+            [1, 0], [3, 4], [10, 4], [12, 0], [10, -4], [3, -4]
+        ];
+
+        drawPolygon(this.canvas.current, gridSize, originX, originY, vertices)
+    };
+
     updateSize = () => {
         this.setState({
             width: window.innerWidth,
@@ -39,33 +50,25 @@ class Canvas extends React.Component {
         });
     };
 
-    onMouseDown = () => {
-        this.isDrag = true;
+    onMouseDown = (event) => {
+        this.pressed = {
+            x: this.state.originX - event.clientX,
+            y: this.state.originY - event.clientY,
+        };
     };
 
     onMouseUp = () => {
-        this.isDrag = false
+        this.pressed = null
     };
 
     onMouseMove = (event) => {
-        if (! this.isDrag)
+        if (! this.pressed)
             return;
 
         this.setState({
-            originX: event.clientX,
-            originY: event.clientY,
+            originX: this.pressed.x + event.clientX,
+            originY: this.pressed.y + event.clientY,
         });
-    };
-
-    draw = () => {
-        const {gridSize, originX, originY} = this.state;
-        drawAxis(this.canvas.current, gridSize, originX, originY);
-
-        const vertices = [
-            [1.5, 0], [3, 4], [10, 4], [12, 0], [10, -4], [3, -4]
-        ];
-
-        drawPolygon(this.canvas.current, gridSize, originX, originY, vertices)
     };
 
     render() {
@@ -143,7 +146,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
         context.stroke();
     }
 
-    context.strokeStyle = "#888";
+    context.strokeStyle = "#575757";
 
     // Draw origin lines
     context.beginPath();
@@ -226,8 +229,8 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
 
 const drawPolygon = (canvas, gridSize, originX, originY, vertices) => {
     const context = canvas.getContext("2d");
-    context.strokeStyle = "#888";
-    context.fillStyle = '#f00';
+    context.strokeStyle = "#575757";
+    context.fillStyle = "#ffa85f";
 
     context.beginPath();
     let vertex = vertices.shift();
