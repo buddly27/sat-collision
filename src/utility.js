@@ -127,21 +127,23 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
 
 
 export const drawPolygon = (canvas, gridSize, originX, originY, vertices) => {
+    const _vertices = [...vertices];
+
     const context = canvas.getContext("2d");
     context.strokeStyle = "#575757";
     context.fillStyle = "#ffa85f";
 
     context.beginPath();
-    let vertex = vertices.shift();
+    let vertex = _vertices.shift();
     context.moveTo(
         originX + gridSize * vertex[0],
-        originY + gridSize * vertex[1]
+        originY + gridSize * vertex[1] * -1
     );
 
-    vertices.forEach((vertex) => {
+    _vertices.forEach((vertex) => {
         context.lineTo(
             originX + gridSize * vertex[0],
-            originY + gridSize * vertex[1]
+            originY + gridSize * vertex[1] * -1
         );
     });
 
