@@ -13,10 +13,14 @@ class Canvas extends React.Component {
 
         this.state = {
             gridSize: 50,
-            originX: Math.round(dimensions.width / 2.0),
+            originX: Math.round(dimensions.width / 3.0),
             originY: Math.round(dimensions.height / 2.0),
             width: dimensions.width,
             height: dimensions.height,
+            polygons: [
+                [[1, 0], [3, 2], [10, 2], [12, 0], [10, -2], [3, -2]],
+                [[14, 4], [14, 7], [18, 7], [18, 4]],
+            ]
         };
 
         // Record delta to origin pressed when moving canvas;
@@ -40,14 +44,14 @@ class Canvas extends React.Component {
     }
 
     draw = () => {
-        const {gridSize, originX, originY} = this.state;
+        const {gridSize, originX, originY, polygons} = this.state;
         drawAxis(this.canvas.current, gridSize, originX, originY);
 
-        // const vertices = [
-        //     [1.5, 0], [3, 4], [10, 4], [12, 0], [10, -4], [3, -4]
-        // ];
-        //
-        // drawPolygon(this.canvas.current, gridSize, originX, originY, vertices)
+        polygons.forEach((vertices) => {
+            drawPolygon(
+                this.canvas.current, gridSize, originX, originY, vertices
+            )
+        })
     };
 
     updateSize = () => {
