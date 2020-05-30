@@ -1,5 +1,5 @@
 import React from "react";
-import Canvas from "./Canvas/index.js";
+import Canvas from "../Canvas/index.js";
 
 
 function App() {
