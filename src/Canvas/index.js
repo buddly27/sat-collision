@@ -15,18 +15,21 @@ class Canvas extends React.Component {
             height: window.innerHeight,
         };
 
-        // Record origin pressed when moving canvas;
+        // Record delta to origin pressed when moving canvas;
         this.pressed = null;
     }
 
     componentDidMount() {
         window.addEventListener("resize", this.updateSize);
+        document.addEventListener("wheel", this.onZoom, {passive: false});
         this.draw();
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.updateSize);
+        document.removeEventListener("wheel", this.onZoom);
     }
+
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.draw();
@@ -37,7 +40,7 @@ class Canvas extends React.Component {
         drawAxis(this.canvas.current, gridSize, originX, originY);
 
         const vertices = [
-            [1, 0], [3, 4], [10, 4], [12, 0], [10, -4], [3, -4]
+            [1.5, 0], [3, 4], [10, 4], [12, 0], [10, -4], [3, -4]
         ];
 
         drawPolygon(this.canvas.current, gridSize, originX, originY, vertices)
@@ -71,22 +74,34 @@ class Canvas extends React.Component {
         });
     };
 
+    onZoom = (event) => {
+        const {wheelDelta, detail} = event;
+        const {gridSize} = this.state;
+
+        const delta = Math.max(Math.min(wheelDelta || -detail, 10), -10);
+        this.setState({gridSize: Math.max(Math.min(gridSize + delta), 5)});
+
+        event.preventDefault();
+    };
+
     render() {
         return (
-            <canvas
-                ref={this.canvas}
-                className="Canvas"
-                onMouseDown={this.onMouseDown}
-                onMouseUp={this.onMouseUp}
-                onMouseMove={this.onMouseMove}
-                onTouchStart={this.onMouseDown}
-                onTouchEnd={this.onMouseUp}
-                onTouchMove={this.onMouseMove}
-                onKeyDown={onKeyDown}
-                width={this.state.width}
-                height={this.state.height}
-                tabIndex="0"
-            />
+            <div>
+                <canvas
+                    ref={this.canvas}
+                    className="Canvas"
+                    onMouseDown={this.onMouseDown}
+                    onMouseUp={this.onMouseUp}
+                    onMouseMove={this.onMouseMove}
+                    onTouchStart={this.onMouseDown}
+                    onTouchEnd={this.onMouseUp}
+                    onTouchMove={this.onMouseMove}
+                    onKeyDown={onKeyDown}
+                    width={this.state.width}
+                    height={this.state.height}
+                    tabIndex="0"
+                />
+            </div>
         );
     }
 }
