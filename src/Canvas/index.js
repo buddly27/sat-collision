@@ -86,22 +86,20 @@ class Canvas extends React.Component {
 
     render() {
         return (
-            <div>
-                <canvas
-                    ref={this.canvas}
-                    className="Canvas"
-                    onMouseDown={this.onMouseDown}
-                    onMouseUp={this.onMouseUp}
-                    onMouseMove={this.onMouseMove}
-                    onTouchStart={this.onMouseDown}
-                    onTouchEnd={this.onMouseUp}
-                    onTouchMove={this.onMouseMove}
-                    onKeyDown={onKeyDown}
-                    width={this.state.width}
-                    height={this.state.height}
-                    tabIndex="0"
-                />
-            </div>
+            <canvas
+                ref={this.canvas}
+                className="Canvas"
+                onMouseDown={this.onMouseDown}
+                onMouseUp={this.onMouseUp}
+                onMouseMove={this.onMouseMove}
+                onTouchStart={this.onMouseDown}
+                onTouchEnd={this.onMouseUp}
+                onTouchMove={this.onMouseMove}
+                onKeyDown={onKeyDown}
+                width={this.state.width}
+                height={this.state.height}
+                tabIndex="0"
+            />
         );
     }
 }
