@@ -11,7 +11,7 @@ class Canvas extends React.Component {
         const dimensions = computeSize();
 
         this.state = {
-            gridSize: 40,
+            gridSize: 50,
             originX: Math.round(dimensions.width / 2.0),
             originY: Math.round(dimensions.height / 2.0),
             width: dimensions.width,
@@ -129,7 +129,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
 
     // Draw grid lines along X axis.
     for (let index = 0; ; index += 1) {
-        const y = originY + (gridSize * index + 0.5);
+        const y = originY + (gridSize * index);
         if (y > Math.floor(canvas.height))
             break;
 
@@ -140,7 +140,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const y = originY - (gridSize * index + 0.5);
+        const y = originY - (gridSize * index);
         if (y < 0)
             break;
 
@@ -152,7 +152,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
 
     // Draw grid lines along Y axis.
     for (let index = 0; ; index += 1) {
-        const x = originX + (gridSize * index + 0.5);
+        const x = originX + (gridSize * index);
         if (x > Math.floor(canvas.width))
             break;
 
@@ -163,7 +163,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const x = originX - (gridSize * index + 0.5);
+        const x = originX - (gridSize * index);
         if (x < 0)
             break;
 
@@ -178,13 +178,13 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     context.strokeStyle = "#000";
 
     context.beginPath();
-    context.moveTo(0, originY + 0.5);
-    context.lineTo(canvas.width, originY + 0.5);
+    context.moveTo(0, originY);
+    context.lineTo(canvas.width, originY);
     context.stroke();
 
     context.beginPath();
-    context.moveTo(originX + 0.5, 0);
-    context.lineTo(originX + 0.5, canvas.height);
+    context.moveTo(originX, 0);
+    context.lineTo(originX, canvas.height);
     context.stroke();
 
     // Draw numbers.
@@ -198,7 +198,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
 
     // Ticks numbers along the X axis.
     for (let index = 1; ; index += 1) {
-        const x = originX + (gridSize * index + 0.5);
+        const x = originX + (gridSize * index);
         if (x > Math.floor(canvas.width))
             break;
 
@@ -207,7 +207,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const x = originX - (gridSize * index + 0.5);
+        const x = originX - (gridSize * index);
         if (x < 0)
             break;
 
@@ -217,7 +217,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
 
     // Ticks numbers along the Y axis.
     for (let index = 1; ; index += 1) {
-        const y = originY + (gridSize * index + 0.5);
+        const y = originY + (gridSize * index);
         if (y > Math.floor(canvas.height))
             break;
 
@@ -226,7 +226,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const y = originY - (gridSize * index + 0.5);
+        const y = originY - (gridSize * index);
         if (y < 0)
             break;
 
