@@ -7,12 +7,15 @@ class Canvas extends React.Component {
     constructor(props) {
         super(props);
         this.canvas = React.createRef();
+
+        const dimensions = computeSize();
+
         this.state = {
-            gridSize: 20,
-            originX: Math.round(window.innerWidth / 2.0),
-            originY: Math.round(window.innerHeight / 2.0),
-            width: window.innerWidth,
-            height: window.innerHeight,
+            gridSize: 40,
+            originX: Math.round(dimensions.width / 2.0),
+            originY: Math.round(dimensions.height / 2.0),
+            width: dimensions.width,
+            height: dimensions.height,
         };
 
         // Record delta to origin pressed when moving canvas;
@@ -47,9 +50,10 @@ class Canvas extends React.Component {
     };
 
     updateSize = () => {
+        const dimensions = computeSize();
         this.setState({
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: dimensions.width,
+            height: dimensions.height,
         });
     };
 
@@ -65,7 +69,7 @@ class Canvas extends React.Component {
     };
 
     onMouseMove = (event) => {
-        if (! this.pressed)
+        if (!this.pressed)
             return;
 
         this.setState({
@@ -105,16 +109,26 @@ class Canvas extends React.Component {
 }
 
 
+const computeSize = () => {
+    const {innerWidth, innerHeight, devicePixelRatio} = window;
+    const dpr = devicePixelRatio || 1;
+
+    return {
+        width: innerWidth * dpr,
+        height: innerHeight * dpr,
+    }
+};
+
+
 const drawAxis = (canvas, gridSize, originX, originY) => {
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     context.lineWidth = 1;
     context.strokeStyle = "#e9e9e9";
-    context.fillStyle = '#000';
 
     // Draw grid lines along X axis.
-    for (let index = 0;; index += 1) {
+    for (let index = 0; ; index += 1) {
         const y = originY + (gridSize * index + 0.5);
         if (y > Math.floor(canvas.height))
             break;
@@ -125,7 +139,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
         context.stroke();
     }
 
-    for (let index = 1;; index += 1) {
+    for (let index = 1; ; index += 1) {
         const y = originY - (gridSize * index + 0.5);
         if (y < 0)
             break;
@@ -137,7 +151,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     // Draw grid lines along Y axis.
-    for (let index = 0;; index += 1) {
+    for (let index = 0; ; index += 1) {
         const x = originX + (gridSize * index + 0.5);
         if (x > Math.floor(canvas.width))
             break;
@@ -148,7 +162,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
         context.stroke();
     }
 
-    for (let index = 1;; index += 1) {
+    for (let index = 1; ; index += 1) {
         const x = originX - (gridSize * index + 0.5);
         if (x < 0)
             break;
@@ -159,9 +173,10 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
         context.stroke();
     }
 
-    context.strokeStyle = "#575757";
-
     // Draw origin lines
+    context.lineWidth = 2;
+    context.strokeStyle = "#000";
+
     context.beginPath();
     context.moveTo(0, originY + 0.5);
     context.lineTo(canvas.width, originY + 0.5);
@@ -172,70 +187,51 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     context.lineTo(originX + 0.5, canvas.height);
     context.stroke();
 
-    // Ticks marks along the X axis.
-    for (let index = 1;; index += 1) {
+    // Draw numbers.
+    context.font = "25px Sans-serif";
+    context.lineWidth = 3;
+    context.strokeStyle = "#FFF";
+    context.fillStyle = "#000";
+    context.textAlign = "center";
+
+
+    // Ticks numbers along the X axis.
+    for (let index = 1; ; index += 1) {
         const x = originX + (gridSize * index + 0.5);
         if (x > Math.floor(canvas.width))
             break;
 
-        context.beginPath();
-        context.moveTo(x, originY -3);
-        context.lineTo(x, originY + 3);
-        context.stroke();
-
-        // Draw numbers.
-        context.font = "9px Arial";
-        context.textAlign = "start";
-        context.fillText(`${index}`, x - 2, originY + 15);
+        context.strokeText(`${index}`, x, originY + 30);
+        context.fillText(`${index}`, x , originY + 30);
     }
 
-    for (let index = 1;; index += 1) {
+    for (let index = 1; ; index += 1) {
         const x = originX - (gridSize * index + 0.5);
         if (x < 0)
             break;
 
-        context.beginPath();
-        context.moveTo(x, originY -3);
-        context.lineTo(x, originY + 3);
-        context.stroke();
-
-        // Draw numbers.
-        context.font = "9px Arial";
-        context.textAlign = "start";
-        context.fillText(`${-index}`, x - 2, originY + 15);
+        context.strokeText(`${-index}`, x, originY + 30);
+        context.fillText(`${-index}`, x, originY + 30);
     }
 
-    // Ticks marks along the Y axis.
-    for (let index = 1;; index += 1) {
+    // Ticks numbers along the Y axis.
+    for (let index = 1; ; index += 1) {
         const y = originY + (gridSize * index + 0.5);
         if (y > Math.floor(canvas.height))
             break;
 
-        context.beginPath();
-        context.moveTo(originX - 3, y);
-        context.lineTo(originX + 3, y);
-        context.stroke();
-
-        // Draw numbers.
-        context.font = "9px Arial";
-        context.textAlign = "start";
-        context.fillText(`${-index}`, originX + 8, y + 2);
+        context.strokeText(`${-index}`, originX - 25, y);
+        context.fillText(`${-index}`, originX - 25, y);
     }
 
-    for (let index = 1;; index += 1) {
+    for (let index = 1; ; index += 1) {
         const y = originY - (gridSize * index + 0.5);
         if (y < 0)
             break;
 
-        context.beginPath();
-        context.moveTo(originX - 3, y);
-        context.lineTo(originX + 3, y);
-        context.stroke();
+        context.strokeText(`${index}`, originX - 25, y);
+        context.fillText(`${index}`, originX - 25, y);
 
-        // Draw numbers.
-        context.font = "9px Arial";
-        context.textAlign = "start";
-        context.fillText(`${index}`, originX + 8, y + 2);
     }
 };
 
