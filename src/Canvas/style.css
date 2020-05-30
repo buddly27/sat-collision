@@ -6,3 +6,4 @@
     height: 100%;
     margin: 0;
 }
+.Canvas:focus { outline: none; }
