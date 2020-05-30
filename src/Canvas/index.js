@@ -21,13 +21,13 @@ class Canvas extends React.Component {
 
     componentDidMount() {
         window.addEventListener("resize", this.updateSize);
-        document.addEventListener("wheel", this.onZoom, {passive: false});
+        window.addEventListener("wheel", this.onZoom, {passive: false});
         this.draw();
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.updateSize);
-        document.removeEventListener("wheel", this.onZoom);
+        window.removeEventListener("wheel", this.onZoom);
     }
 
 
