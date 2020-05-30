@@ -193,6 +193,7 @@ const drawAxis = (canvas, gridSize, originX, originY) => {
     context.strokeStyle = "#FFF";
     context.fillStyle = "#000";
     context.textAlign = "center";
+    context.textBaseline = "middle";
 
 
     // Ticks numbers along the X axis.
