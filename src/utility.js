@@ -1,15 +1,26 @@
 export const computeSize = () => {
-    const {innerWidth, innerHeight, devicePixelRatio} = window;
-    const dpr = devicePixelRatio || 1;
+    const {innerWidth, innerHeight} = window;
+    const coord = computeCoordinates(innerWidth, innerHeight);
 
     return {
-        width: innerWidth * dpr,
-        height: innerHeight * dpr,
+        width: coord.x,
+        height: coord.y,
     }
 };
 
 
-export const drawAxis = (canvas, gridSize, originX, originY) => {
+export const computeCoordinates = (x, y) => {
+    const {devicePixelRatio} = window;
+    const dpr = devicePixelRatio || 1;
+
+    return {
+        x: x * dpr,
+        y: y * dpr,
+    }
+};
+
+
+export const drawAxis = (canvas, scale, originX, originY) => {
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -18,7 +29,7 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
 
     // Draw grid lines along X axis.
     for (let index = 0; ; index += 1) {
-        const y = originY + (gridSize * index);
+        const y = originY + (scale * index);
         if (y > Math.floor(canvas.height))
             break;
 
@@ -29,7 +40,7 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const y = originY - (gridSize * index);
+        const y = originY - (scale * index);
         if (y < 0)
             break;
 
@@ -41,7 +52,7 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
 
     // Draw grid lines along Y axis.
     for (let index = 0; ; index += 1) {
-        const x = originX + (gridSize * index);
+        const x = originX + (scale * index);
         if (x > Math.floor(canvas.width))
             break;
 
@@ -52,7 +63,7 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const x = originX - (gridSize * index);
+        const x = originX - (scale * index);
         if (x < 0)
             break;
 
@@ -84,10 +95,9 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
     context.textAlign = "center";
     context.textBaseline = "middle";
 
-
     // Ticks numbers along the X axis.
     for (let index = 1; ; index += 1) {
-        const x = originX + (gridSize * index);
+        const x = originX + (scale * index);
         if (x > Math.floor(canvas.width))
             break;
 
@@ -96,7 +106,7 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const x = originX - (gridSize * index);
+        const x = originX - (scale * index);
         if (x < 0)
             break;
 
@@ -106,7 +116,7 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
 
     // Ticks numbers along the Y axis.
     for (let index = 1; ; index += 1) {
-        const y = originY + (gridSize * index);
+        const y = originY + (scale * index);
         if (y > Math.floor(canvas.height))
             break;
 
@@ -115,7 +125,7 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const y = originY - (gridSize * index);
+        const y = originY - (scale * index);
         if (y < 0)
             break;
 
@@ -126,29 +136,14 @@ export const drawAxis = (canvas, gridSize, originX, originY) => {
 };
 
 
-export const drawPolygon = (canvas, gridSize, originX, originY, vertices) => {
-    const _vertices = [...vertices];
+export const createPolygon = (scale, x, y, vertices) => {
+    const polygon = new Path2D();
 
-    const context = canvas.getContext("2d");
-    context.strokeStyle = "#575757";
-    context.fillStyle = "#ffa85f";
-
-    context.beginPath();
-    let vertex = _vertices.shift();
-    context.moveTo(
-        originX + gridSize * vertex[0],
-        originY + gridSize * vertex[1] * -1
-    );
-
-    _vertices.forEach((vertex) => {
-        context.lineTo(
-            originX + gridSize * vertex[0],
-            originY + gridSize * vertex[1] * -1
-        );
+    polygon.moveTo(x + scale * vertices[0][0], y + scale * vertices[0][1] * -1);
+    vertices.slice(1).forEach((vertex) => {
+        polygon.lineTo(x + scale * vertex[0], y + scale * vertex[1] * -1);
     });
 
-    context.closePath();
-    context.fill();
-    context.stroke();
+    polygon.closePath();
+    return polygon;
 };
-
