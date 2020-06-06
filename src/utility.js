@@ -20,7 +20,7 @@ export const computeCoordinates = (x, y) => {
 };
 
 
-export const drawAxis = (canvas, scale, originX, originY) => {
+export const drawAxis = (canvas, scale, origin) => {
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -29,7 +29,7 @@ export const drawAxis = (canvas, scale, originX, originY) => {
 
     // Draw grid lines along X axis.
     for (let index = 0; ; index += 1) {
-        const y = originY + (scale * index);
+        const y = origin.y + (scale * index);
         if (y > Math.floor(canvas.height))
             break;
 
@@ -40,7 +40,7 @@ export const drawAxis = (canvas, scale, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const y = originY - (scale * index);
+        const y = origin.y - (scale * index);
         if (y < 0)
             break;
 
@@ -52,7 +52,7 @@ export const drawAxis = (canvas, scale, originX, originY) => {
 
     // Draw grid lines along Y axis.
     for (let index = 0; ; index += 1) {
-        const x = originX + (scale * index);
+        const x = origin.x + (scale * index);
         if (x > Math.floor(canvas.width))
             break;
 
@@ -63,7 +63,7 @@ export const drawAxis = (canvas, scale, originX, originY) => {
     }
 
     for (let index = 1; ; index += 1) {
-        const x = originX - (scale * index);
+        const x = origin.x - (scale * index);
         if (x < 0)
             break;
 
@@ -78,13 +78,13 @@ export const drawAxis = (canvas, scale, originX, originY) => {
     context.strokeStyle = "#000";
 
     context.beginPath();
-    context.moveTo(0, originY);
-    context.lineTo(canvas.width, originY);
+    context.moveTo(0, origin.y);
+    context.lineTo(canvas.width, origin.y);
     context.stroke();
 
     context.beginPath();
-    context.moveTo(originX, 0);
-    context.lineTo(originX, canvas.height);
+    context.moveTo(origin.x, 0);
+    context.lineTo(origin.x, canvas.height);
     context.stroke();
 
     // Draw numbers.
@@ -97,53 +97,57 @@ export const drawAxis = (canvas, scale, originX, originY) => {
 
     // Ticks numbers along the X axis.
     for (let index = 1; ; index += 1) {
-        const x = originX + (scale * index);
+        const x = origin.x + (scale * index);
         if (x > Math.floor(canvas.width))
             break;
 
-        context.strokeText(`${index}`, x, originY + 30);
-        context.fillText(`${index}`, x , originY + 30);
+        context.strokeText(`${index}`, x, origin.y + 30);
+        context.fillText(`${index}`, x, origin.y + 30);
     }
 
     for (let index = 1; ; index += 1) {
-        const x = originX - (scale * index);
+        const x = origin.x - (scale * index);
         if (x < 0)
             break;
 
-        context.strokeText(`${-index}`, x, originY + 30);
-        context.fillText(`${-index}`, x, originY + 30);
+        context.strokeText(`${-index}`, x, origin.y + 30);
+        context.fillText(`${-index}`, x, origin.y + 30);
     }
 
     // Ticks numbers along the Y axis.
     for (let index = 1; ; index += 1) {
-        const y = originY + (scale * index);
+        const y = origin.y + (scale * index);
         if (y > Math.floor(canvas.height))
             break;
 
-        context.strokeText(`${-index}`, originX - 25, y);
-        context.fillText(`${-index}`, originX - 25, y);
+        context.strokeText(`${-index}`, origin.x - 25, y);
+        context.fillText(`${-index}`, origin.x - 25, y);
     }
 
     for (let index = 1; ; index += 1) {
-        const y = originY - (scale * index);
+        const y = origin.y - (scale * index);
         if (y < 0)
             break;
 
-        context.strokeText(`${index}`, originX - 25, y);
-        context.fillText(`${index}`, originX - 25, y);
+        context.strokeText(`${index}`, origin.x - 25, y);
+        context.fillText(`${index}`, origin.x - 25, y);
 
     }
 };
 
 
-export const createPolygon = (scale, x, y, vertices) => {
-    const polygon = new Path2D();
+export const generateGuid = () => {
+    let result = "";
+    let uuid;
 
-    polygon.moveTo(x + scale * vertices[0][0], y + scale * vertices[0][1] * -1);
-    vertices.slice(1).forEach((vertex) => {
-        polygon.lineTo(x + scale * vertex[0], y + scale * vertex[1] * -1);
-    });
+    for (let j = 0; j < 32; j++) {
+        if (j === 8 || j === 12 || j === 16 || j === 20) {
+            result = result + "-";
+        }
 
-    polygon.closePath();
-    return polygon;
+        uuid = Math.floor(Math.random() * 16).toString(16).toUpperCase();
+        result = result + uuid;
+    }
+
+    return result;
 };
