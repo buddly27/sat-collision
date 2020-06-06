@@ -22,6 +22,8 @@ export const computeCoordinates = (x, y) => {
 
 export const drawAxis = (canvas, scale, origin) => {
     const context = canvas.getContext("2d");
+    context.setLineDash([]);
+
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     context.lineWidth = 1;
@@ -133,6 +135,25 @@ export const drawAxis = (canvas, scale, origin) => {
         context.fillText(`${index}`, origin.x - 25, y);
 
     }
+};
+
+export const drawNormals = (canvas, origin, normals) => {
+    const context = canvas.getContext("2d");
+    context.setLineDash([20, 10]);
+    context.strokeStyle = "#3f51b5";
+
+    const scale = Math.max(canvas.width, canvas.height);
+
+    normals.forEach((normal) => {
+        context.beginPath();
+
+        context.moveTo(origin.x, origin.y);
+        context.lineTo(
+            origin.x + scale * normal[0],
+            origin.y + scale * normal[1]
+        );
+        context.stroke();
+    })
 };
 
 

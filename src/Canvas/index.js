@@ -71,6 +71,11 @@ class Canvas extends React.Component {
             const hover = polygon.hover(mouse.x, mouse.y);
 
             polygon.draw(hover);
+
+            // Draw normals.
+            utility.drawNormals(
+                this.canvas.current, origin, polygon.normals()
+            );
         })
     };
 
