@@ -1,6 +1,6 @@
 import React from "react";
-import * as utility from "../utility";
-import {Polygon} from "../shape";
+import * as utility from "./utility";
+import {Polygon} from "./shape";
 import "./style.css";
 
 
