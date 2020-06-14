@@ -63,6 +63,10 @@ class Canvas extends React.Component {
 
     draw = () => {
         const {scale, origin, mouse} = this.state;
+        const {width, height} = this.canvas.current;
+
+        const context = this.canvas.current.getContext("2d");
+        context.clearRect(0, 0, width, height);
 
         utility.drawAxis(this.canvas.current, scale, origin);
 
@@ -74,9 +78,14 @@ class Canvas extends React.Component {
 
             // Draw normals.
             utility.drawNormals(
-                this.canvas.current, origin, polygon.normals()
+                this.canvas.current, origin, polygon.normals
             );
-        })
+        });
+
+        // Compute polygons projection on axis of separations.
+        utility.drawProjections(
+            this.canvas.current, origin, scale, Object.values(this.polygons)
+        );
     };
 
     updateSize = () => {

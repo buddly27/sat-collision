@@ -1,30 +1,6 @@
-export const computeSize = () => {
-    const {innerWidth, innerHeight} = window;
-    const coord = computeCoordinates(innerWidth, innerHeight);
-
-    return {
-        width: coord.x,
-        height: coord.y,
-    }
-};
-
-
-export const computeCoordinates = (x, y) => {
-    const {devicePixelRatio} = window;
-    const dpr = devicePixelRatio || 1;
-
-    return {
-        x: x * dpr,
-        y: y * dpr,
-    }
-};
-
-
 export const drawAxis = (canvas, scale, origin) => {
     const context = canvas.getContext("2d");
     context.setLineDash([]);
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
 
     context.lineWidth = 1;
     context.strokeStyle = "#e9e9e9";
@@ -141,6 +117,7 @@ export const drawNormals = (canvas, origin, normals) => {
     const context = canvas.getContext("2d");
     context.setLineDash([20, 10]);
     context.strokeStyle = "#3f51b5";
+    context.lineWidth = 3;
 
     const scale = Math.max(canvas.width, canvas.height);
 
@@ -154,6 +131,49 @@ export const drawNormals = (canvas, origin, normals) => {
         );
         context.stroke();
     })
+};
+
+
+export const drawProjections = (canvas, origin, scale, polygons) => {
+    const context = canvas.getContext("2d");
+
+    context.setLineDash([]);
+    context.strokeStyle = "#ff8500";
+    context.lineWidth = 10;
+
+    for (let i = 0; i < polygons.length; i++) {
+        for (let j = 0; j < polygons.length; j++) {
+            if (polygons[i].identifier !== polygons[j].identifier) {
+                const normals = Array.from(
+                    new Set([...polygons[i].normals, ...polygons[j].normals])
+                );
+
+                for (let n = 0; n < normals.length; n++) {
+                    const [min1, max1] = polygons[i].projection(normals[n]);
+                    const [min2, max2] = polygons[j].projection(normals[n]);
+
+                    let x1, x2;
+                    const slope = normals[n][1]/ normals[n][0];
+
+                    x1 = (min1 * scale) / Math.sqrt((1 + slope**2));
+                    x2 = (max1 * scale) / Math.sqrt((1 + slope**2));
+
+                    context.beginPath();
+                    context.moveTo(origin.x + x1, origin.y + x1 * slope);
+                    context.lineTo(origin.x + x2, origin.y + x2 * slope);
+                    context.stroke();
+
+                    x1 = (min2 * scale) / Math.sqrt((1 + slope**2));
+                    x2 = (max2 * scale) / Math.sqrt((1 + slope**2));
+
+                    context.beginPath();
+                    context.moveTo(origin.x + x1, origin.y + x1 * slope);
+                    context.lineTo(origin.x + x2, origin.y + x2 * slope);
+                    context.stroke();
+                }
+            }
+        }
+    }
 };
 
 
@@ -171,4 +191,34 @@ export const generateGuid = () => {
     }
 
     return result;
+};
+
+
+export const computeSize = () => {
+    const {innerWidth, innerHeight} = window;
+    const coord = computeCoordinates(innerWidth, innerHeight);
+
+    return {
+        width: coord.x,
+        height: coord.y,
+    }
+};
+
+
+export const computeCoordinates = (x, y) => {
+    return {
+        x: computePosition(x),
+        y: computePosition(y),
+    }
+};
+
+
+export const computePosition = (x) => {
+    return x * devicePixelRatio();
+};
+
+
+export const devicePixelRatio = () => {
+    const {devicePixelRatio} = window;
+    return devicePixelRatio || 1;
 };
