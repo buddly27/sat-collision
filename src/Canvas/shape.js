@@ -8,6 +8,7 @@ export class Polygon {
         this.vertices = vertices;
         this.edges = this._computeEdges();
         this.normals = this._computeNormals();
+        this.axes = this._computeSeparationAxes();
         this._saved_vertices = null;
 
         // Record polygon elements created.
@@ -90,6 +91,17 @@ export class Polygon {
                 return [n[0]/m, n[1]/m];
             }
         )
+    }
+
+    _computeSeparationAxes() {
+        // Invert normal when X axis is negative.
+        const axes = this.normals.map((normal) =>
+            (normal[0] < 0 || normal[1] <= -1)
+                ? [-normal[0], -normal[1]] : normal
+        );
+
+        // Ensure that no duplicated axis are kept.
+        return Array.from(new Set(axes))
     }
 
     projection(normal) {

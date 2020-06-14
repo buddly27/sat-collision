@@ -113,7 +113,7 @@ export const drawAxis = (canvas, scale, origin) => {
     }
 };
 
-export const drawNormals = (canvas, origin, normals) => {
+export const drawAxes = (canvas, origin, axes) => {
     const context = canvas.getContext("2d");
     context.setLineDash([20, 10]);
     context.strokeStyle = "#3f51b5";
@@ -121,15 +121,23 @@ export const drawNormals = (canvas, origin, normals) => {
 
     const scale = Math.max(canvas.width, canvas.height);
 
-    normals.forEach((normal) => {
+    axes.forEach((axis) => {
         context.beginPath();
-
         context.moveTo(origin.x, origin.y);
         context.lineTo(
-            origin.x + scale * normal[0],
-            origin.y + scale * normal[1]
+            origin.x + scale * axis[0],
+            origin.y + scale * axis[1] * -1
         );
         context.stroke();
+
+        context.beginPath();
+        context.moveTo(origin.x, origin.y);
+        context.lineTo(
+            origin.x + scale * axis[0] * -1,
+            origin.y + scale * axis[1]
+        );
+        context.stroke();
+
     })
 };
 
@@ -141,37 +149,55 @@ export const drawProjections = (canvas, origin, scale, polygons) => {
     context.strokeStyle = "#ff8500";
     context.lineWidth = 10;
 
+    // Record projection processed to prevent duplicate processes.
+    const processed = new Set();
+
+    // Process all combinations of polygons.
     for (let i = 0; i < polygons.length; i++) {
         for (let j = 0; j < polygons.length; j++) {
-            if (polygons[i].identifier !== polygons[j].identifier) {
-                const normals = Array.from(
-                    new Set([...polygons[i].normals, ...polygons[j].normals])
-                );
+            const [p1, p2] = [polygons[i], polygons[j]];
 
-                for (let n = 0; n < normals.length; n++) {
-                    const [min1, max1] = polygons[i].projection(normals[n]);
-                    const [min2, max2] = polygons[j].projection(normals[n]);
+            // Skip process if polygons are the same.
+            if (p1.identifier === p2.identifier)
+                continue;
 
-                    let x1, x2;
-                    const slope = normals[n][1]/ normals[n][0];
+            // Skip process if polygons have been already processed.
+            const process_id = [p1.identifier, p2.identifier].sort().join(" ");
 
-                    x1 = (min1 * scale) / Math.sqrt((1 + slope**2));
-                    x2 = (max1 * scale) / Math.sqrt((1 + slope**2));
+            if (processed.has(process_id))
+                continue;
 
-                    context.beginPath();
-                    context.moveTo(origin.x + x1, origin.y + x1 * slope);
-                    context.lineTo(origin.x + x2, origin.y + x2 * slope);
-                    context.stroke();
+            const axes = Array.from(new Set([...p1.axes, ...p2.axes]));
 
-                    x1 = (min2 * scale) / Math.sqrt((1 + slope**2));
-                    x2 = (max2 * scale) / Math.sqrt((1 + slope**2));
+            for (let n = 0; n < axes.length; n++) {
+                const [min1, max1] = p1.projection(axes[n]);
+                const [min2, max2] = p2.projection(axes[n]);
 
-                    context.beginPath();
-                    context.moveTo(origin.x + x1, origin.y + x1 * slope);
-                    context.lineTo(origin.x + x2, origin.y + x2 * slope);
-                    context.stroke();
-                }
+                let x1, x2;
+                const slope = (axes[n][0] !== 0)
+                    ? axes[n][1] / axes[n][0] : 999;
+                const c = (axes[n][0] !== 0) ? 0 : axes[n][1];
+
+
+                x1 = (min1 * scale) / Math.sqrt((1 + slope**2));
+                x2 = (max1 * scale) / Math.sqrt((1 + slope**2));
+
+                context.beginPath();
+                context.moveTo(origin.x + x1, origin.y + x1 * slope * -1 + c);
+                context.lineTo(origin.x + x2, origin.y + x2 * slope * -1 + c);
+                context.stroke();
+
+                x1 = (min2 * scale) / Math.sqrt((1 + slope**2));
+                x2 = (max2 * scale) / Math.sqrt((1 + slope**2));
+
+                context.beginPath();
+                context.moveTo(origin.x + x1, origin.y + x1 * slope * -1 + c);
+                context.lineTo(origin.x + x2, origin.y + x2 * slope * -1 + c);
+                context.stroke();
             }
+
+            // Record process.
+            processed.add(process_id)
         }
     }
 };

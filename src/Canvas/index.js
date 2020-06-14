@@ -76,10 +76,8 @@ class Canvas extends React.Component {
 
             polygon.draw(hover);
 
-            // Draw normals.
-            utility.drawNormals(
-                this.canvas.current, origin, polygon.normals
-            );
+            // Draw axis of separation.
+            utility.drawAxes(this.canvas.current, origin, polygon.axes);
         });
 
         // Compute polygons projection on axis of separations.
