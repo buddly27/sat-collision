@@ -68,7 +68,7 @@ class Canvas extends React.Component {
         const context = this.canvas.current.getContext("2d");
         context.clearRect(0, 0, width, height);
 
-        utility.drawAxis(this.canvas.current, scale, origin);
+        utility.drawBackground(this.canvas.current, scale, origin);
 
         Object.values(this.polygons).forEach((polygon) => {
             polygon.create(origin, scale);

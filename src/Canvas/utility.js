@@ -1,4 +1,4 @@
-export const drawAxis = (canvas, scale, origin) => {
+export const drawBackground = (canvas, scale, origin) => {
     const context = canvas.getContext("2d");
     context.setLineDash([]);
 
