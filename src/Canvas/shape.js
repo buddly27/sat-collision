@@ -103,7 +103,7 @@ export class Polygon {
         let [minimum, maximum] = [+Infinity, -Infinity];
 
         this.vertices.forEach((vertex) => {
-            const projection = vertex[0] * normal[0] + vertex[0] * normal[1];
+            const projection = vertex[0] * normal[0] + vertex[1] * normal[1];
             minimum = Math.min(minimum, projection);
             maximum = Math.max(maximum, projection);
         });
