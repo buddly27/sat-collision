@@ -68,7 +68,9 @@ class Canvas extends React.Component {
         const context = this.canvas.current.getContext("2d");
         context.clearRect(0, 0, width, height);
 
-        utility.drawBackground(this.canvas.current, scale, origin);
+        if (this.props.gridVisible) {
+            utility.drawBackground(this.canvas.current, scale, origin);
+        }
 
         Object.values(this.polygons).forEach((polygon) => {
             polygon.create(origin, scale);
@@ -76,8 +78,9 @@ class Canvas extends React.Component {
 
             polygon.draw(hover);
 
-            // Draw axis of separation.
-            utility.drawAxes(this.canvas.current, origin, polygon.axes);
+            if (this.props.separationAxesVisible) {
+                utility.drawAxes(this.canvas.current, origin, polygon.axes);
+            }
         });
 
         // Compute polygons projection on axis of separations.
@@ -99,7 +102,7 @@ class Canvas extends React.Component {
     onMouseDown = (event) => {
         const {clientX, clientY} = event;
         const {mouse, origin} = this.state;
-        const client = utility.computeCoordinates(clientX , clientY);
+        const client = utility.computeCoordinates(clientX, clientY);
 
         this.pressed = null;
         this.pressed_delta = {x: origin.x - client.x, y: origin.y - client.y};
@@ -124,7 +127,7 @@ class Canvas extends React.Component {
         const {origin, scale} = this.state;
         const {offsetTop, offsetLeft} = this.canvas.current;
 
-        const client = utility.computeCoordinates(clientX , clientY);
+        const client = utility.computeCoordinates(clientX, clientY);
         const offset = utility.computeCoordinates(offsetLeft, offsetTop);
 
         const state = {
@@ -139,8 +142,7 @@ class Canvas extends React.Component {
                 x: client.x + this.pressed_delta.x,
                 y: client.y + this.pressed_delta.y,
             }
-        }
-        else if (this.pressed_delta && this.pressed) {
+        } else if (this.pressed_delta && this.pressed) {
             const delta = {
                 x: (client.x + this.pressed_delta.x - origin.x) / scale,
                 y: (client.y + this.pressed_delta.y - origin.y) / scale
