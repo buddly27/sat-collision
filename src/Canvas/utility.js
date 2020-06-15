@@ -4,6 +4,7 @@ export const drawBackground = (canvas, scale, origin) => {
 
     context.lineWidth = 1;
     context.strokeStyle = "#e9e9e9";
+    context.globalAlpha = 1;
 
     // Draw grid lines along X axis.
     for (let index = 0; ; index += 1) {
@@ -118,6 +119,7 @@ export const drawAxes = (canvas, origin, axes) => {
     context.setLineDash([20, 10]);
     context.strokeStyle = "#3f51b5";
     context.lineWidth = 3;
+    context.globalAlpha = 1;
 
     const scale = Math.max(canvas.width, canvas.height);
 
@@ -146,8 +148,8 @@ export const drawProjections = (canvas, origin, scale, polygons) => {
     const context = canvas.getContext("2d");
 
     context.setLineDash([]);
-    context.strokeStyle = "#ff8500";
     context.lineWidth = 10;
+    context.globalAlpha = 1;
 
     // Record projection processed to prevent duplicate processes.
     const processed = new Set();
@@ -173,6 +175,9 @@ export const drawProjections = (canvas, origin, scale, polygons) => {
                 const [min1, max1] = p1.projection(axes[n]);
                 const [min2, max2] = p2.projection(axes[n]);
 
+                const collision = !(max1 < min2 || max2 < min1);
+                context.strokeStyle = collision ? "#ff7974" : "#3f51b5";
+
                 let x1, x2;
                 const slope = (axes[n][0] !== 0)
                     ? axes[n][1] / axes[n][0] : 999;
@@ -194,6 +199,20 @@ export const drawProjections = (canvas, origin, scale, polygons) => {
                 context.moveTo(origin.x + x1, origin.y + x1 * slope * -1 + c);
                 context.lineTo(origin.x + x2, origin.y + x2 * slope * -1 + c);
                 context.stroke();
+
+                if (collision) {
+                    const minDelta = Math.max(min1, min2);
+                    const maxDelta = Math.min(max1, max2);
+                    x1 = (minDelta * scale) / Math.sqrt((1 + slope**2));
+                    x2 = (maxDelta * scale) / Math.sqrt((1 + slope**2));
+
+                    context.strokeStyle = "#b50200";
+
+                    context.beginPath();
+                    context.moveTo(origin.x + x1, origin.y + x1 * slope * -1 + c);
+                    context.lineTo(origin.x + x2, origin.y + x2 * slope * -1 + c);
+                    context.stroke();
+                }
             }
 
             // Record process.
