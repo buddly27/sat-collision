@@ -1,15 +1,17 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import Checkbox from "@material-ui/core/Checkbox";
 import Toolbar from "@material-ui/core/Toolbar";
+import Checkbox from "@material-ui/core/Checkbox";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 
-const drawerWidth = 300;
+const drawerWidth = 320;
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -20,18 +22,24 @@ const useStyles = makeStyles((theme) => ({
         width: drawerWidth,
     },
     formControl: {
-        margin: theme.spacing(3),
+        margin: theme.spacing(2),
     },
+    formGroup: {
+        margin: theme.spacing(2),
+    }
 }));
 
 
 export default function AppDrawer(props) {
     const classes = useStyles();
     const {
+        example,
+        examples,
         gridVisible,
         separationAxesVisible,
         drawGrid,
         drawSeparationAxes,
+        drawExample
     } = props;
 
     return (
@@ -48,10 +56,31 @@ export default function AppDrawer(props) {
                 className={classes.formControl}
             >
                 <FormLabel component="legend">
+                    Examples
+                </FormLabel>
+
+                <FormGroup className={classes.formGroup}>
+                    <FormControl>
+                        <Select
+                            value={example}
+                            onChange={
+                                (event) => drawExample(event.target.value)
+                            }
+                        >
+                            {
+                                examples.map((item) =>
+                                    <MenuItem value={item}>{item}</MenuItem>
+                                )
+                            }
+                        </Select>
+                    </FormControl>
+                </FormGroup>
+
+                <FormLabel component="legend">
                     Settings
                 </FormLabel>
 
-                <FormGroup>
+                <FormGroup className={classes.formGroup}>
                     <FormControlLabel
                         control={
                             <Checkbox
