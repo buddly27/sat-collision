@@ -62,7 +62,7 @@ export class Polygon {
         this.context.lineWidth = 1;
         this.context.globalAlpha = 0.8;
         this.context.strokeStyle = "#575757";
-        this.context.fillStyle = hover ? "#ffa85f" : "#d0dcff";
+        this.context.fillStyle = hover ? "#b8c1ff" : "#d0dcff";
 
         this.context.fill(this.shape);
         this.context.stroke(this.shape);
