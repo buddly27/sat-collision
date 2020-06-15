@@ -94,14 +94,18 @@ export class Polygon {
     }
 
     _computeSeparationAxes() {
-        // Invert normal when X axis is negative.
-        const axes = this.normals.map((normal) =>
-            (normal[0] < 0 || normal[1] <= -1)
-                ? [-normal[0], -normal[1]] : normal
-        );
+        const mapping = {};
 
-        // Ensure that no duplicated axis are kept.
-        return Array.from(new Set(axes))
+        this.normals.forEach((normal) => {
+            // Invert normal when X axis is negative.
+            const axis = (normal[0] < 0 || normal[1] <= -1)
+                ? [-normal[0], -normal[1]] : normal;
+
+            // Add to mapping with unique ID to prevent duplicate.
+            mapping[axis.join()] = axis
+        });
+
+        return Object.values(mapping)
     }
 
     projection(normal) {
