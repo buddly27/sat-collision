@@ -58,7 +58,7 @@ export default function App() {
             />
             <Canvas
                 example={example}
-                polygons={examples[example]}
+                verticesList={examples[example]}
                 gridVisible={gridVisible}
                 axesVisible={axesVisible}
             />

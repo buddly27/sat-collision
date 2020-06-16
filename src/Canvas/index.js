@@ -5,7 +5,7 @@ import "./style.css";
 
 
 export default function Canvas(props) {
-    const {gridVisible, axesVisible, polygons} = props;
+    const {gridVisible, axesVisible, verticesList} = props;
 
     const size = utility.computeWindowSize();
     const canvas = React.useRef(null);
@@ -42,12 +42,13 @@ export default function Canvas(props) {
     const onMouseDown = React.useCallback((event) => {
         const {clientX, clientY} = event;
         const client = utility.computeCoordinates(clientX, clientY);
+        const context = canvas.current.getContext("2d");
 
         let pressed = null;
         const polygons = Object.values(polygonMapping);
 
         for (let i = 0; i < polygons.length; i++) {
-            if (polygons[i].hover(pointer.x, pointer.y)) {
+            if (context.isPointInPath(polygons[i].shape, pointer.x, pointer.y)) {
                 pressed = polygons[i].identifier;
 
                 // Record the vertices where the mouse is pressed to compute
@@ -68,7 +69,7 @@ export default function Canvas(props) {
             })
         );
 
-    }, [origin, pointer, polygonMapping]);
+    }, [canvas, origin, pointer, polygonMapping]);
 
     // Release 'pressed' and 'pressedDelta' when mouse is up.
     const onMouseUp = React.useCallback(() => {
@@ -161,7 +162,6 @@ export default function Canvas(props) {
     // Draw polygons when component is setup.
     React.useEffect(() => {
         const {width, height} = canvas.current;
-
         const context = canvas.current.getContext("2d");
         context.clearRect(0, 0, width, height);
 
@@ -170,34 +170,37 @@ export default function Canvas(props) {
             utility.drawGrid(context, origin, width, height, scale);
         }
 
+        // Record polygons to display.
+        const polygons = [];
+
         // Draw polygons.
-        polygons.forEach((vertices) => {
+        verticesList.forEach((vertices) => {
             const id = vertices.map((vertex) => vertex.join()).join("-");
 
+            // Create polygon if it
             if (!(id in polygonMapping)) {
-                polygonMapping[id] = new Polygon(id, context, ...vertices);
+                polygonMapping[id] = new Polygon(id, ...vertices);
             }
 
             const polygon = polygonMapping[id];
-            polygon.create(origin, scale);
+            const shape = polygon.createShape(origin, scale);
 
-            const hover = polygon.hover(pointer.x, pointer.y);
-            polygon.draw(hover);
+            const hover = context.isPointInPath(shape, pointer.x, pointer.y);
+            utility.drawShape(context, shape, hover);
 
             if (axesVisible) {
                 utility.drawAxes(context, origin, width, height, polygon.axes);
             }
 
+            polygons.push(polygon)
         });
 
         // Compute polygons projection on axis of separations.
-        utility.drawProjections(
-            context, origin, scale, Object.values(polygonMapping)
-        );
+        utility.drawProjections(context, origin, scale, polygons);
 
     }, [
         canvas, origin, pointer, scale, polygonMapping,
-        gridVisible, axesVisible, polygons,
+        gridVisible, axesVisible, verticesList,
     ]);
 
     return (
@@ -216,3 +219,4 @@ export default function Canvas(props) {
         />
     )
 }
+

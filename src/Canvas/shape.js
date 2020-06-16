@@ -1,12 +1,17 @@
+import * as utility from "./utility";
+
 export class Polygon {
 
-    constructor(identifier, context, ...vertices) {
+    constructor(identifier, ...vertices) {
         this.identifier = identifier;
-        this.context = context;
         this.vertices = vertices;
-        this.edges = this._computeEdges();
-        this.normals = this._computeNormals();
-        this.axes = this._computeSeparationAxes();
+
+        // Compute axis of separations.
+        const edges = utility.computeEdges(vertices);
+        const normals = utility.computeNormals(edges);
+        this.axes = utility.computeAxesOfSeparation(normals);
+
+        // Record saved vertices to process polygon movement.
         this._savedVertices = null;
 
         // Record polygon elements created.
@@ -14,10 +19,6 @@ export class Polygon {
 
         // Record projections.
         this.projections = {}
-    }
-
-    hover(x, y) {
-        return this.context.isPointInPath(this.shape, x, y)
     }
 
     saveState() {
@@ -33,77 +34,9 @@ export class Polygon {
         this.projections = {}
     }
 
-    create(origin, scale) {
-        this.shape = new Path2D();
-
-        this.shape.moveTo(
-            origin.x + scale * this.vertices[0][0],
-            origin.y + scale * this.vertices[0][1] * -1
-        );
-
-        this.vertices.slice(1).forEach((vertex) => {
-            this.shape.lineTo(
-                origin.x + scale * vertex[0],
-                origin.y + scale * vertex[1] * -1
-            );
-        });
-
-        this.shape.closePath();
-    }
-
-    draw(hover = false) {
-        if (this.shape === null)
-            return;
-
-        this.context.setLineDash([]);
-        this.context.lineWidth = 1;
-        this.context.globalAlpha = 0.8;
-        this.context.strokeStyle = "#575757";
-        this.context.fillStyle = hover ? "#b8c1ff" : "#d0dcff";
-
-        this.context.fill(this.shape);
-        this.context.stroke(this.shape);
-    }
-
-    _computeEdges() {
-        const edges = [];
-        const N = this.vertices.length;
-
-        for (let i = 0; i < N; i++) {
-            const vertex1 = this.vertices[i];
-            const vertex2 = this.vertices[(i + 1) % N];
-            edges.push([
-                vertex2[0] - vertex1[0],
-                vertex2[1] - vertex1[1]
-            ]);
-        }
-
-        return edges;
-    }
-
-    _computeNormals() {
-        return this.edges.map(
-            (edge) => {
-                const n = [-edge[1], edge[0]];
-                const m = Math.sqrt((n[0]*n[0] + n[1]*n[1]));
-                return [n[0]/m, n[1]/m];
-            }
-        )
-    }
-
-    _computeSeparationAxes() {
-        const mapping = {};
-
-        this.normals.forEach((normal) => {
-            // Invert normal when X axis is negative.
-            const axis = (normal[0] < 0 || normal[1] <= -1)
-                ? [-normal[0], -normal[1]] : normal;
-
-            // Add to mapping with unique ID to prevent duplicate.
-            mapping[axis.join()] = axis
-        });
-
-        return Object.values(mapping)
+    createShape(origin, scale) {
+        this.shape = utility.createShape(origin, scale, this.vertices);
+        return this.shape;
     }
 
     projection(normal) {
@@ -114,15 +47,9 @@ export class Polygon {
             return [result[0], result[1]];
         }
 
-        let [minimum, maximum] = [+Infinity, -Infinity];
-
-        this.vertices.forEach((vertex) => {
-            const projection = vertex[0] * normal[0] + vertex[1] * normal[1];
-            minimum = Math.min(minimum, projection);
-            maximum = Math.max(maximum, projection);
-        });
-
-        this.projections[normalId] = [minimum, maximum];
+        this.projections[normalId] = utility.computeProjection(
+            this.vertices, normal
+        );
         return this.projections[normalId];
     }
 }
