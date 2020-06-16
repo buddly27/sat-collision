@@ -2,6 +2,9 @@
     "name": "fluid-simulation",
     "version": "0.1.0",
     "private": true,
+    "engines": {
+        "yarn": "1.x"
+    },
     "dependencies": {
         "@material-ui/core": "^4.10.0",
         "@material-ui/icons": "^4.9.1",
