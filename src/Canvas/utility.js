@@ -242,11 +242,7 @@ export const computeCoordinates = (x, y) => {
 
 
 export const computePosition = (x) => {
-    return x * devicePixelRatio();
-};
-
-
-export const devicePixelRatio = () => {
     const {devicePixelRatio} = window;
-    return devicePixelRatio || 1;
+    const dpr = devicePixelRatio || 1;
+    return x * dpr;
 };
