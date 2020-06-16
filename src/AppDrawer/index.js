@@ -3,8 +3,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Toolbar from "@material-ui/core/Toolbar";
 import Checkbox from "@material-ui/core/Checkbox";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import NativeSelect from "@material-ui/core/NativeSelect";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
@@ -61,7 +60,7 @@ export default function AppDrawer(props) {
 
                 <FormGroup className={classes.formGroup}>
                     <FormControl>
-                        <Select
+                        <NativeSelect
                             value={example}
                             onChange={
                                 (event) => drawExample(event.target.value)
@@ -69,15 +68,12 @@ export default function AppDrawer(props) {
                         >
                             {
                                 examples.map((item, index) =>
-                                    <MenuItem
-                                        key={index}
-                                        value={item}
-                                    >
+                                    <option key={index} value={item}>
                                         {item}
-                                    </MenuItem>
+                                    </option>
                                 )
                             }
-                        </Select>
+                        </NativeSelect>
                     </FormControl>
                 </FormGroup>
 
