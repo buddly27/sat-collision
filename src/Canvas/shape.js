@@ -7,7 +7,7 @@ export class Polygon {
         this.edges = this._computeEdges();
         this.normals = this._computeNormals();
         this.axes = this._computeSeparationAxes();
-        this._saved_vertices = null;
+        this._savedVertices = null;
 
         // Record polygon elements created.
         this.shape = null;
@@ -21,11 +21,11 @@ export class Polygon {
     }
 
     saveState() {
-        this._saved_vertices = this.vertices;
+        this._savedVertices = this.vertices;
     }
 
     move(delta) {
-        this.vertices = this._saved_vertices.map((vertex) => {
+        this.vertices = this._savedVertices.map((vertex) => {
             return [vertex[0] + delta.x, vertex[1] - delta.y];
         });
 
