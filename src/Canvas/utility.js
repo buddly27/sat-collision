@@ -24,8 +24,7 @@ export const computePosition = (x) => {
 };
 
 
-export const drawGrid = (canvas, scale, origin) => {
-    const context = canvas.getContext("2d");
+export const drawGrid = (context, origin, width, height, scale) => {
     context.setLineDash([]);
 
     context.lineWidth = 1;
@@ -35,12 +34,12 @@ export const drawGrid = (canvas, scale, origin) => {
     // Draw grid lines along X axis.
     for (let index = 0; ; index += 1) {
         const y = origin.y + (scale * index);
-        if (y > Math.floor(canvas.height))
+        if (y > Math.floor(height))
             break;
 
         context.beginPath();
         context.moveTo(0, y);
-        context.lineTo(canvas.width, y);
+        context.lineTo(width, y);
         context.stroke();
     }
 
@@ -51,19 +50,19 @@ export const drawGrid = (canvas, scale, origin) => {
 
         context.beginPath();
         context.moveTo(0, y);
-        context.lineTo(canvas.width, y);
+        context.lineTo(width, y);
         context.stroke();
     }
 
     // Draw grid lines along Y axis.
     for (let index = 0; ; index += 1) {
         const x = origin.x + (scale * index);
-        if (x > Math.floor(canvas.width))
+        if (x > Math.floor(width))
             break;
 
         context.beginPath();
         context.moveTo(x, 0);
-        context.lineTo(x, canvas.height);
+        context.lineTo(x, height);
         context.stroke();
     }
 
@@ -74,7 +73,7 @@ export const drawGrid = (canvas, scale, origin) => {
 
         context.beginPath();
         context.moveTo(x, 0);
-        context.lineTo(x, canvas.height);
+        context.lineTo(x, height);
         context.stroke();
     }
 
@@ -84,12 +83,12 @@ export const drawGrid = (canvas, scale, origin) => {
 
     context.beginPath();
     context.moveTo(0, origin.y);
-    context.lineTo(canvas.width, origin.y);
+    context.lineTo(width, origin.y);
     context.stroke();
 
     context.beginPath();
     context.moveTo(origin.x, 0);
-    context.lineTo(origin.x, canvas.height);
+    context.lineTo(origin.x, height);
     context.stroke();
 
     // Draw numbers.
@@ -103,7 +102,7 @@ export const drawGrid = (canvas, scale, origin) => {
     // Ticks numbers along the X axis.
     for (let index = 1; ; index += 1) {
         const x = origin.x + (scale * index);
-        if (x > Math.floor(canvas.width))
+        if (x > Math.floor(width))
             break;
 
         context.strokeText(`${index}`, x, origin.y + 30);
@@ -122,7 +121,7 @@ export const drawGrid = (canvas, scale, origin) => {
     // Ticks numbers along the Y axis.
     for (let index = 1; ; index += 1) {
         const y = origin.y + (scale * index);
-        if (y > Math.floor(canvas.height))
+        if (y > Math.floor(height))
             break;
 
         context.strokeText(`${-index}`, origin.x - 25, y);
@@ -140,14 +139,13 @@ export const drawGrid = (canvas, scale, origin) => {
     }
 };
 
-export const drawAxes = (canvas, origin, axes) => {
-    const context = canvas.getContext("2d");
+export const drawAxes = (context, origin, width, height, axes) => {
     context.setLineDash([20, 10]);
     context.strokeStyle = "#3f51b5";
     context.lineWidth = 3;
     context.globalAlpha = 1;
 
-    const scale = Math.max(canvas.width, canvas.height);
+    const scale = Math.max(width, height);
 
     axes.forEach((axis) => {
         context.beginPath();
@@ -170,9 +168,7 @@ export const drawAxes = (canvas, origin, axes) => {
 };
 
 
-export const drawProjections = (canvas, origin, scale, polygons) => {
-    const context = canvas.getContext("2d");
-
+export const drawProjections = (context, origin, scale, polygons) => {
     context.setLineDash([]);
     context.lineWidth = 10;
     context.globalAlpha = 1;

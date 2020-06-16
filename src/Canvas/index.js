@@ -167,7 +167,7 @@ export default function Canvas(props) {
 
         // Draw grid if required.
         if (gridVisible) {
-            utility.drawGrid(canvas.current, scale, origin);
+            utility.drawGrid(context, origin, width, height, scale);
         }
 
         // Draw polygons.
@@ -185,14 +185,14 @@ export default function Canvas(props) {
             polygon.draw(hover);
 
             if (axesVisible) {
-                utility.drawAxes(canvas.current, origin, polygon.axes);
+                utility.drawAxes(context, origin, width, height, polygon.axes);
             }
 
         });
 
         // Compute polygons projection on axis of separations.
         utility.drawProjections(
-            canvas.current, origin, scale, Object.values(polygonMapping)
+            context, origin, scale, Object.values(polygonMapping)
         );
 
     }, [
