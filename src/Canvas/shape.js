@@ -31,7 +31,6 @@ export class Polygon {
 
         // Reset projections.
         this.projections = {}
-
     }
 
     create(origin, scale) {

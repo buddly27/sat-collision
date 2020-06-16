@@ -7,16 +7,16 @@ import "./style.css";
 export default function Canvas(props) {
     const {gridVisible, axesVisible, polygons} = props;
 
-    const dimensions = utility.computeSize();
+    const size = utility.computeWindowSize();
     const canvas = React.useRef(null);
 
     const [state, setState] = React.useState({
         scale: 50,
-        width: dimensions.width,
-        height: dimensions.height,
+        width: size.width,
+        height: size.height,
         origin: {
-            x: Math.round(dimensions.width / 3.0),
-            y: Math.round(dimensions.height / 2.0),
+            x: Math.round(size.width / 3.0),
+            y: Math.round(size.height / 2.0),
         },
         pointer: {
             x: 0,
@@ -118,13 +118,13 @@ export default function Canvas(props) {
 
     // Update state when window is resized.
     const onResize = React.useCallback(() => {
-        const _dimensions = utility.computeSize();
+        const newSize = utility.computeWindowSize();
 
         setState(prevState => {
             return {
                 ...prevState,
-                width: _dimensions.width,
-                height: _dimensions.height
+                width: newSize.width,
+                height: newSize.height
             };
         });
 

@@ -222,7 +222,7 @@ export const drawProjections = (canvas, origin, scale, polygons) => {
 };
 
 
-export const computeSize = () => {
+export const computeWindowSize = () => {
     const {innerWidth, innerHeight} = window;
     const coord = computeCoordinates(innerWidth, innerHeight);
 
