@@ -19,17 +19,25 @@ export default function App() {
     const [state, setState] = React.useState({
         gridVisible: true,
         axesVisible: true,
-        example: "Hexagon + Square"
+        example: "Square + Square"
     });
 
     const examples = {
+        "Square + Square": [
+            [[1, 1], [1, 4], [4, 4], [4, 1]],
+            [[5, -1], [5, -4], [8, -4], [8, -1]],
+        ],
         "Hexagon + Square": [
             [[1, 0], [3, 2], [10, 2], [12, 0], [10, -2], [3, -2]],
             [[14, 4], [14, 7], [18, 7], [18, 4]]
         ],
-        "Square + Square": [
-            [[1, 1], [1, 4], [4, 4], [4, 1]],
-            [[14, 4], [14, 7], [18, 7], [18, 4]]
+        "Diamond + Triangle": [
+            [[10, 4], [8, 7], [10, 10], [12, 7]],
+            [[23, 1], [25, 6], [28, 1]],
+        ],
+        "Convex + Square": [
+            [[-8, 3], [-6, 5], [-7, 7], [-4, 7], [-4, 3]],
+            [[8, -3], [8, -7], [4, -7], [4, -3]],
         ],
     };
 
