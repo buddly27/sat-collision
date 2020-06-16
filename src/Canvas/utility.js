@@ -1,3 +1,29 @@
+export const computeWindowSize = () => {
+    const {innerWidth, innerHeight} = window;
+    const coord = computeCoordinates(innerWidth, innerHeight);
+
+    return {
+        width: coord.x,
+        height: coord.y,
+    }
+};
+
+
+export const computeCoordinates = (x, y) => {
+    return {
+        x: computePosition(x),
+        y: computePosition(y),
+    }
+};
+
+
+export const computePosition = (x) => {
+    const {devicePixelRatio} = window;
+    const dpr = devicePixelRatio || 1;
+    return x * dpr;
+};
+
+
 export const drawGrid = (canvas, scale, origin) => {
     const context = canvas.getContext("2d");
     context.setLineDash([]);
@@ -219,30 +245,4 @@ export const drawProjections = (canvas, origin, scale, polygons) => {
             processed.add(process_id)
         }
     }
-};
-
-
-export const computeWindowSize = () => {
-    const {innerWidth, innerHeight} = window;
-    const coord = computeCoordinates(innerWidth, innerHeight);
-
-    return {
-        width: coord.x,
-        height: coord.y,
-    }
-};
-
-
-export const computeCoordinates = (x, y) => {
-    return {
-        x: computePosition(x),
-        y: computePosition(y),
-    }
-};
-
-
-export const computePosition = (x) => {
-    const {devicePixelRatio} = window;
-    const dpr = devicePixelRatio || 1;
-    return x * dpr;
 };
