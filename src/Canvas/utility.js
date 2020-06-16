@@ -1,4 +1,4 @@
-export const drawBackground = (canvas, scale, origin) => {
+export const drawGrid = (canvas, scale, origin) => {
     const context = canvas.getContext("2d");
     context.setLineDash([]);
 
@@ -219,23 +219,6 @@ export const drawProjections = (canvas, origin, scale, polygons) => {
             processed.add(process_id)
         }
     }
-};
-
-
-export const generateGuid = () => {
-    let result = "";
-    let uuid;
-
-    for (let j = 0; j < 32; j++) {
-        if (j === 8 || j === 12 || j === 16 || j === 20) {
-            result = result + "-";
-        }
-
-        uuid = Math.floor(Math.random() * 16).toString(16).toUpperCase();
-        result = result + uuid;
-    }
-
-    return result;
 };
 
 

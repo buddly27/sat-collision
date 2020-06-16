@@ -19,9 +19,21 @@ export default function App() {
     const [state, setState] = React.useState({
         gridVisible: true,
         axesVisible: true,
+        example: "Hexagon + Square"
     });
 
-    const {gridVisible, axesVisible} = state;
+    const examples = {
+        "Hexagon + Square": [
+            [[1, 0], [3, 2], [10, 2], [12, 0], [10, -2], [3, -2]],
+            [[14, 4], [14, 7], [18, 7], [18, 4]]
+        ],
+        "Square + Square": [
+            [[1, 1], [1, 4], [4, 4], [4, 1]],
+            [[14, 4], [14, 7], [18, 7], [18, 4]]
+        ],
+    };
+
+    const {gridVisible, axesVisible, example} = state;
 
     return (
         <div className="App">
@@ -36,16 +48,19 @@ export default function App() {
                 </Toolbar>
             </AppBar>
             <AppDrawer
+                example={example}
+                examples={Object.keys(examples)}
                 gridVisible={gridVisible}
-                separationAxesVisible={axesVisible}
+                axesVisible={axesVisible}
+                drawExample={(value) => setState({...state, example: value})}
                 drawGrid={(value) => setState({...state, gridVisible: value})}
-                drawSeparationAxes={
-                    (value) => setState({...state, axesVisible: value})
-                }
+                drawAxes={(value) => setState({...state, axesVisible: value})}
             />
             <Canvas
+                example={example}
+                polygons={examples[example]}
                 gridVisible={gridVisible}
-                separationAxesVisible={axesVisible}
+                axesVisible={axesVisible}
             />
         </div>
     );

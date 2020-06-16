@@ -36,9 +36,9 @@ export default function AppDrawer(props) {
         example,
         examples,
         gridVisible,
-        separationAxesVisible,
+        axesVisible,
         drawGrid,
-        drawSeparationAxes,
+        drawAxes,
         drawExample
     } = props;
 
@@ -68,8 +68,13 @@ export default function AppDrawer(props) {
                             }
                         >
                             {
-                                examples.map((item) =>
-                                    <MenuItem value={item}>{item}</MenuItem>
+                                examples.map((item, index) =>
+                                    <MenuItem
+                                        key={index}
+                                        value={item}
+                                    >
+                                        {item}
+                                    </MenuItem>
                                 )
                             }
                         </Select>
@@ -96,12 +101,10 @@ export default function AppDrawer(props) {
                     <FormControlLabel
                         control={
                             <Checkbox
-                                checked={separationAxesVisible}
+                                checked={axesVisible}
                                 color="primary"
                                 onChange={
-                                    (event) => {
-                                        drawSeparationAxes(event.target.checked)
-                                    }
+                                    (event) => drawAxes(event.target.checked)
                                 }
                             />
                         }

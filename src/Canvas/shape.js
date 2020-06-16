@@ -1,9 +1,7 @@
-import * as utility from "./utility";
-
 export class Polygon {
 
-    constructor(context, ...vertices) {
-        this.identifier = utility.generateGuid();
+    constructor(identifier, context, ...vertices) {
+        this.identifier = identifier;
         this.context = context;
         this.vertices = vertices;
         this.edges = this._computeEdges();
