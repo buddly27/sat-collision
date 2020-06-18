@@ -1,5 +1,5 @@
 {
-    "name": "fluid-simulation",
+    "name": "sat-collision",
     "version": "0.1.0",
     "private": true,
     "engines": {
